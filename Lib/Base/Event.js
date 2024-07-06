@@ -9,9 +9,9 @@ module.exports = class Event {
     /** @param {IEvent} data  */
     constructor(data) {
         /** @type {keyof import("discord.js").ClientEvents} */
-        this.name = name;
+        this.name = data.name;
         /** @type {boolean} */
-        this.once = once;
+        this.once = data.once;
     }
 
     execute(...args) {
