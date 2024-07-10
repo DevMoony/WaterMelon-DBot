@@ -12,6 +12,8 @@ const { DataStore } = require("qulity");
 // Used for logging to console.
 const { Logger } = require("./Logger");
 const { bgGreen, black, bgCyan } = require("colorette");
+const { ApplicationCommandType } = require("discord.js");
+const DataStore = require("qulity/lib/Managers/DataStore");
 
 // The 3 constants below are the paths to the events, message commands, slash commands.
 const MsgCmdsPath = resolve(join(__dirname, "..", "Commands"));
@@ -99,7 +101,7 @@ const SlashCommandHandler = (client) => {
                 map.push({
                     name: cmd.name,
                     description: cmd.description,
-                    type: cmd.type,
+                    type: ApplicationCommandType.ChatInput,
                     options: cmd.options,
                     defaultPermission: cmd.defaultPermission,
                 });
@@ -130,6 +132,15 @@ const SlashCommandHandler = (client) => {
             LOGGER.error(err.stack ? err.stack : err);
         }
     })();
+
+    console.log("\n\n");
+    LOGGER.info(
+        `Loaded ${map.size} slash commands in ${
+            start - Date.now()
+        }ms`
+    );
+
+    return map;
 };
 
 /**
@@ -139,6 +150,10 @@ const EventHandler = (client) => {
     const LOGGER = Logger({
         name: `[HANDLER: ${bgCyan(black("Slash Commands"))}]`,
     });
+    /** @type {DataStore<string, import("../Base/Interaction")>} */
+    const map = new DataStore();
+    const start = Date.now();
+    console.log("\n");
 
     for (let subFolder of readdirSync(EventsPath)) {
         LOGGER.info(`- ${subFolder}`);
@@ -151,6 +166,8 @@ const EventHandler = (client) => {
                 let event = require(`../Events/${subFolder}/${file}`);
                 event = new event();
                 const name = event.name || file.split(".")[0];
+
+                map.set
 
                 LOGGER.info(`   ✔ ​​​${file}`);
 

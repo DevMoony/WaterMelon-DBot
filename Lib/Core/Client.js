@@ -1,5 +1,8 @@
-// Used for interacting with Discord - Client side, so the bot itself
+// Used for interacting with Discord - Client side, so the bot itself.
 const { Client, Partials, GatewayIntentBits } = require("discord.js");
+
+// Used for initiating the event, command and slash command handler.
+const { MessageCommandHandler, SlashCommandHandler, EventHandler } = require("./Handler");
 
 // Resolvers for resolving certain items in a better way.
 const UserResolver = require("../Resolvers/User");
@@ -92,5 +95,9 @@ module.exports = class WaterMelonClient extends Client {
 
         /** @type {typeof DB} */
 		this.database = DB;
+
+        this.commands = MessageCommandHandler(this);
+        this.interactions = SlashCommandHandler(this);
+        EventHandler(this);
     }
 };
