@@ -2,7 +2,7 @@
 const { Client, Partials, GatewayIntentBits } = require("discord.js");
 
 // Used for initiating the event, command and slash command handler.
-const { MessageCommandHandler, SlashCommandHandler, EventHandler } = require("./Handler");
+const EventHandler = require("../Handler/Events");
 
 // Resolvers for resolving certain items in a better way.
 const UserResolver = require("../Resolvers/User");
@@ -98,6 +98,10 @@ module.exports = class WaterMelonClient extends Client {
 
         this.commands = MessageCommandHandler(this);
         this.interactions = SlashCommandHandler(this);
-        EventHandler(this);
+        const evnts = new EventHandler(this);
+    }
+
+    start() {
+        
     }
 };
