@@ -13,9 +13,13 @@ declare module "qulity" {
 
         public size: number;
 
+        // @ts-ignore
         public set(key: string, value: value): Collection<key, value>;
+        // @ts-ignore
         public delete(key: string): Collection<key, value>;
+        // @ts-ignore
         public get(key: string): value;
+        // @ts-ignore
         public has(key: string): boolean;
         /** Creates an ordered array of the values of this {@link Collection}. */
         public toArray(): value[];
@@ -129,6 +133,7 @@ declare module "qulity" {
     }
 
     /** Manages the API methods of data models and holds its cache. */
+    // @ts-ignore
     class Manager<key, value> implements Collection<key, value> {
         constructor(
             /** Optional initial values of this {@link Collection}. */
