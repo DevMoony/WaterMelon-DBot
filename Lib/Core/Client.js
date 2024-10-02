@@ -10,6 +10,11 @@ const UserResolver = require("../Resolvers/User");
 // Database - used for several purposes for storing data.
 const DB = require("../Database/Database");
 
+// Utilities - used for various functions.
+const {
+    readFromJSON
+} = require("../Utilities/Utilities");
+
 function Sweeper() {
     return {
         /** @type {import("discord.js").LifetimeSweepOptions} */
@@ -95,10 +100,16 @@ module.exports = class WaterMelonClient extends Client {
 
         /** @type {typeof DB} */
 		this.database = DB;
+        
+        const evnts = new EventHandler(this);
 
         this.commands = MessageCommandHandler(this);
         this.interactions = SlashCommandHandler(this);
-        const evnts = new EventHandler(this);
+        
+        /** 
+         * @type {boolean}
+         * @default false */
+        this.aiEnabled = false;
     }
 
     start() {
