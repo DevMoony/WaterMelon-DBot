@@ -11,10 +11,14 @@ const UserResolver = require("../Resolvers/User");
 const DB = require("../Database/Database");
 
 // Utilities - used for various functions.
-const {
-    readFromJSON
-} = require("../Utilities/Utilities");
+const { readFromJSON } = require("../Utilities/Utilities");
 
+// IPC - used for IPC. (inter-process communication)
+const IPC = require("./IPC");
+const Embed = require("../Utilities/Embed/Embed");
+const ipc = new IPC(this);
+
+// Sweeper - used for clearing out old data.
 function Sweeper() {
     return {
         /** @type {import("discord.js").LifetimeSweepOptions} */
@@ -48,6 +52,16 @@ function Sweeper() {
         sticker: { interval: 950 },
     };
 }
+
+/**
+ * @typedef ClientStatistics
+ * @property {number} guilds
+ * @property {number} channels
+ * @property {number} users
+ * @property {number} shards
+ * @property {number} ram_total
+ * @property {number} ram_used
+ * @property {number} ram_available */
 
 /**
  * Creating the class for handling the Discord behavior
@@ -99,20 +113,142 @@ module.exports = class WaterMelonClient extends Client {
         };
 
         /** @type {typeof DB} */
-		this.database = DB;
-        
+        this.database = DB;
+
         const evnts = new EventHandler(this);
 
         this.commands = MessageCommandHandler(this);
         this.interactions = SlashCommandHandler(this);
-        
-        /** 
+
+        /**
          * @type {boolean}
          * @default false */
         this.aiEnabled = false;
     }
 
-    start() {
+    getClientStatistics() {
+        const available =
+            process.memoryUsage().heapTotal - process.memoryUsage().heapUsed;
+
+        return {
+            channels: this.channels.cache.size,
+            guilds: this.guilds.cache.size,
+            ram_available: available,
+            ram_used: process.memoryUsage().heapUsed,
+            ram_total: process.memoryUsage().heapTotal,
+            shards: this.shard?.ids.length ?? 0,
+            users: this.users.cache.size,
+        };
+    }
+
+    async fetchGlobalStatistics() {
+        /** @type {ClientStatistics[]} */
+        const results = await ipc.send({ op: "ClientStatistics" }, true);
+        /** @type {ClientStatistics} */
+        const statistics = {
+            channels: 0,
+            guilds: 0,
+            ram_total: 0,
+            ram_available: 0,
+            ram_used: 0,
+            shards: 0,
+            users: 0,
+        };
+
+        results.map((result) => {
+            for (const key of Object.keys(result))
+                statistics[key] += result[key];
+        });
+
+        return statistics;
+    }
+
+    /**
+     * @param {import("discord.js").TextBasedChannels} channel
+     * @param {string} emoji
+     * @param {string} category
+     * @param {string} message
+     * @returns {Promise<import("discord.js").Message>} */
+    async sendNormalMessage(channel, emoji, category, message) {
+        return await channel.send(`${emoji} **${category} |** ${message}`);
+    }
+
+    /**
+     * @param {import("discord.js").TextBasedChannels} channel
+     * @param {import("discord.js").APIEmbed} embed
+     * @returns {Promise<import("discord.js").Message>} */
+    async sendEmbedMessage(channel, embed) {
+        this.verifyEmbed(embed, embed.author?.name || "");
+
+        return await channel.send({ embeds: [embed] });
+    }
+
+    /**
+     * @param {import("discord.js").ChatInputCommandInteraction} interaction
+     * @param {string} category
+     * @param {string} message
+     * @returns {Promise<import("discord.js").Message>} */
+    async sendInteractionMessage(interaction, category, message) {
+        const embed = new Embed().default(
+            "Success",
+            category,
+            message
+        );
+
+        return await this.sendInteraction(interaction, { embeds: [embed] });
+    }
+
+    /**
+     * @param {import("discord.js").ChatInputCommandInteraction} interaction
+     * @param {import("../types.d.ts").EmbedTypes} theme
+     * @param {string} category
+     * @param {string} message
+     * @returns {Promise<import("discord.js").Message>} */
+    async sendThemedInteractionMessage(interaction, theme, category, message) {
+        const embed = new Embed(theme).default(
+            theme,
+            category,
+            message
+        );
         
+        return await this.sendInteraction(interaction, { embeds: [embed] });
+    }
+
+    /**
+     * @param {import("discord.js").ChatInputCommandInteraction} interaction
+     * @param {string | import("discord.js").InteractionReplyOptions} options */
+    async sendInteraction(interaction, options) {
+        if (typeof options !== "string") {
+            if (options.embeds?.length) {
+                for (const embed of options.embeds) {
+                    this.verifyEmbed(embed, embed.author?.name || "");
+                }
+            }
+        }
+
+        if (interaction.replied) await interaction.followUp(options);
+        else if (interaction.deferred) await interaction.editReply(options);
+        else if (Date.now() - interaction.createdTimestamp < 3000)
+            await interaction.reply(options);
+    }
+
+    /**
+     * @private
+     * @param {Embed} embed
+     * @param {string} title
+     * @returns {Promise<void>} */
+    async verifyEmbed(embed, title) {
+        let emb = new Embed();
+        let ttl = embed.author?.name;
+        let desc = embed.description;
+
+        if (!embed.author) embed = emb.default("Success", title, desc);
+        if (!embed.color) embed = emb.default("Success", ttl, desc);
+    }
+
+
+
+    start() {
+        ipc.listen();
     }
 };
