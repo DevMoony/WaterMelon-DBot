@@ -54,7 +54,8 @@ const formatLog = (level: KeyOfType<typeof logLevels>, name: string, message: st
  * 
  * @param payload - The data to write to the file. */
 const writeFile = async (payload: string) => {
-    const name = `${Dayify(Date.now())}-${now.getMonth()}-${now.getFullYear()}_${now.getHours()}.${now.getMinutes()}.${now.getSeconds()}.log`;
+    // Switch getMonth() to alphabethical month
+    const name = `${Dayify(Date.now())}-${now.getMonth()}_${now.getHours()}.${now.getMinutes()}.${now.getSeconds()}.log`;
     const folderName = join(process.cwd(), "logs", now.getFullYear().toString());
     const exists = existsSync(folderName);
 
