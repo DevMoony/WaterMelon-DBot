@@ -1,0 +1,93 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@std/assert@1": "jsr:@std/assert@1.0.6",
+      "jsr:@std/internal@^1.0.4": "jsr:@std/internal@1.0.4",
+      "npm:@types/node": "npm:@types/node@18.16.19",
+      "npm:@types/node@^22.7.4": "npm:@types/node@22.7.4",
+      "npm:brain.js": "npm:brain.js@1.6.1",
+      "npm:brain.js@^1.6.1": "npm:brain.js@1.6.1",
+      "npm:colorette@^2.0.20": "npm:colorette@2.0.20",
+      "npm:fs@^0.0.2": "npm:fs@0.0.2",
+      "npm:moment@^2.30.1": "npm:moment@2.30.1"
+    },
+    "jsr": {
+      "@std/assert@1.0.6": {
+        "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.4"
+        ]
+      },
+      "@std/internal@1.0.4": {
+        "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
+      }
+    },
+    "npm": {
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
+      },
+      "@types/node@22.7.4": {
+        "integrity": "sha512-y+NPi1rFzDs1NdQHHToqeiX2TIS79SWEAw9GYhkkx8bD0ChpfqC+n2j5OXOCpzfojBEBt6DnEnnG9MY0zk1XLg==",
+        "dependencies": {
+          "undici-types": "undici-types@6.19.8"
+        }
+      },
+      "acorn@5.7.4": {
+        "integrity": "sha512-1D++VG7BhrtvQpNbBzovKNc1FLGGEE/oGe7b9xJm/RFHMBeUaUGpluV9RLjZa47YFdPcDAenEYuq9pQPcMdLJg==",
+        "dependencies": {}
+      },
+      "brain.js@1.6.1": {
+        "integrity": "sha512-c+qrOGoW9VvIohTf70MQCjNzrunXVWI09CT27BZ/lZb6nObGxkdP10c4g9Ztnd8WFJijGdh3veh1A1vk/daIUA==",
+        "dependencies": {
+          "gpu.js": "gpu.js@1.10.4",
+          "thaw.js": "thaw.js@2.1.4"
+        }
+      },
+      "colorette@2.0.20": {
+        "integrity": "sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==",
+        "dependencies": {}
+      },
+      "fs@0.0.2": {
+        "integrity": "sha512-YAiVokMCrSIFZiroB1oz51hPiPRVcUtSa4x2U5RYXyhS9VAPdiFigKbPTnOSq7XY8wd3FIVPYmXpo5lMzFmxgg==",
+        "dependencies": {}
+      },
+      "gpu.js@1.10.4": {
+        "integrity": "sha512-qh5O1LXwwkhGOpEicR9SnQB7xduUDY5rKGPWj9yOFLNI90bX+mReooGQjnL3iZ08btBOT0zQGu9wKA+gGy2BhQ==",
+        "dependencies": {
+          "acorn": "acorn@5.7.4"
+        }
+      },
+      "moment@2.30.1": {
+        "integrity": "sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==",
+        "dependencies": {}
+      },
+      "thaw.js@2.1.4": {
+        "integrity": "sha512-si9DSzEzOBUpbE41wE4Q6NXzXDYZfrniYocrduNtNDwLWj1Auueq8UzgePMQa5gfcQtVCG2OmlCTaHldtno3Vw==",
+        "dependencies": {}
+      },
+      "undici-types@6.19.8": {
+        "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {
+    "https://cdn.skypack.dev/-/brain.js@v2.0.0-beta.24-U4jFyT68uud1ucGj5Rlt/dist=es2020,mode=imports/optimized/brainjs.js": "cd33b6ea0120c92fc38b1b6be58a0582d693ffd5b1bd6994580fc1c12654dfa0",
+    "https://cdn.skypack.dev/-/colorette@v2.0.20-nlyY8i1APXKwruYnx3Ew/dist=es2020,mode=imports/optimized/colorette.js": "7e5ce5ad42f96f71ca658ef243e559fbedbefde09dadbe2848f66ca9da9c6860",
+    "https://cdn.skypack.dev/error/node:tty?from=colorette": "0dcec1a1d534b641d0d6c1ad38c1a500d37c4cc2f07a15fb84a68ed8f57fa0f2",
+    "https://cdn.skypack.dev/pin/brain.js@v2.0.0-beta.24-U4jFyT68uud1ucGj5Rlt/mode=imports/optimized/brainjs.js": "12325666cf1c834b8bbebe347639d7dacf2bbd9710425c1a77a593cd91099351",
+    "https://cdn.skypack.dev/pin/colorette@v2.0.20-nlyY8i1APXKwruYnx3Ew/mode=imports/optimized/colorette.js": "a86c07acd9a4c2ffa29b02f70d1fa59bb40fd2ee09f521a41b939946512ed46e"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1",
+      "npm:@types/node@^22.7.4",
+      "npm:brain.js@^1.6.1",
+      "npm:colorette@^2.0.20",
+      "npm:fs@^0.0.2",
+      "npm:moment@^2.30.1"
+    ]
+  }
+}
