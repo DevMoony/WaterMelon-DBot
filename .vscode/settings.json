@@ -2,5 +2,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
-    }
+    },
+    "deno.cacheOnSave": true,
+    "deno.enable": true
 }
