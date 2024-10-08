@@ -1,14 +1,18 @@
 // Used for interacting with Discord - Client side, so the bot itself.
-const { Client, Partials, GatewayIntentBits } = require("discord.js");
+const { Client, Partials, GatewayIntentBits, Collection } = require("discord.js");
 
 // Used for initiating the event, command and slash command handler.
 const EventHandler = require("../Handler/Events");
+const MessageCommandHandler = require("../Handler/MessageCommands");
 
 // Resolvers for resolving certain items in a better way.
 const UserResolver = require("../Resolvers/User");
 
 // Database - used for several purposes for storing data.
 const DB = require("../Database/Database");
+
+// Unused for coding, just for JSDoc
+const { DataStore } = require("qulity");
 
 function Sweeper() {
     return {
@@ -19,7 +23,7 @@ function Sweeper() {
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").GuildBan>} */
         ban: { interval: 8000, filter: (b, _key, _collection) => !b.user.bot },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").MessageReaction>} */
-        reaction: { interval: 3000 },
+        reaction: { interval: 3000, filter: (r, _key, _collection) => !r.user.bot },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").GuildMember>} */
         guildMember: {
             interval: 3500,
@@ -28,19 +32,19 @@ function Sweeper() {
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").User>} */
         user: { interval: 5000, filter: (u, _key, _collection) => !u.bot },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").VoiceState>} */
-        voiceState: { interval: 1500 },
+        voiceState: { interval: 1500, filter: (v, _key, _collection) => !v.user.bot },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").Presence}>} */
-        presence: { interval: 1000 },
+        presence: { interval: 1000, filter: (p, _key, _collection) => !p.user.bot },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").ThreadMember>} */
-        threadMember: { interval: 10000 },
+        threadMember: { interval: 10000, filter: (t, _key, _collection) => !t.user.bot },
         /** @type {import("discord.js").LifetimeSweepOptions} */
         thread: { lifetime: 1000, interval: 1500 },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").StageInstance>} */
-        stageInstance: { interval: 1300 },
+        stageInstance: { interval: 1300, filter: (_s, _key, _collection) => !_s.archived },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").GuildEmoji>} */
-        emoji: { interval: 1200 },
+        emoji: { interval: 1200, filter: (_e, _key, _collection) => !(_e.managed || _e.animated) },
         /** @type {import("discord.js").SweepOptions<string, import("discord.js").Sticker>} */
-        sticker: { interval: 950 },
+        sticker: { interval: 950, filter: (_s, _key, _collection) => !_s.available },
     };
 }
 
@@ -95,13 +99,24 @@ module.exports = class WaterMelonClient extends Client {
 
         /** @type {typeof DB} */
 		this.database = DB;
+        
+        // Constants for some alternatives
+        const msgCmdHandler = new MessageCommandHandler(this);
 
-        this.commands = MessageCommandHandler(this);
+        // Handlers
         this.interactions = SlashCommandHandler(this);
-        const evnts = new EventHandler(this);
+        /** @type {EventHandler} */
+        this.events = new EventHandler(this);
+        /** @type {MessageCommandHandler} */
+        this.messageCommands = msgCmdHandler;
+        /** @type {typeof msgCmdHandler["commands"]} */
+        this.commands = msgCmdHandler.commands;
     }
 
-    start() {
-        
+    async start() {
+        this.events.load();
+        this.messageCommands.load();
+
+        super.login(process.env.TOKEN);
     }
 };
