@@ -1,7 +1,7 @@
 const brain = require("brain.js");
 
 const net = new brain.recurrent.LSTM({
-    hiddenLayers: [5, 10, 5],
+    hiddenLayers: [10, 30, 10],
     activation: "leaky-relu",
 });
 

@@ -3,6 +3,7 @@ const { Client, Partials, GatewayIntentBits } = require("discord.js");
 
 // Used for initiating the event, command and slash command handler.
 const EventHandler = require("../Handler/Events");
+const InteractionsHandler = require("../Handler/Interactions");
 
 // Resolvers for resolving certain items in a better way.
 const UserResolver = require("../Resolvers/User");
@@ -16,6 +17,7 @@ const { readFromJSON } = require("../Utilities/Utilities");
 // IPC - used for IPC. (inter-process communication)
 const IPC = require("./IPC");
 const Embed = require("../Utilities/Embed/Embed");
+const Logger = require("./Logger.js");
 const ipc = new IPC(this);
 
 // Sweeper - used for clearing out old data.
@@ -67,6 +69,9 @@ function Sweeper() {
  * Creating the class for handling the Discord behavior
  * by extending the built-in Client class provided by discord.js */
 module.exports = class WaterMelonClient extends Client {
+    /** @type {ReturnType<typeof Logger>} */
+    logger;
+
     constructor() {
         super({
             intents: [
@@ -115,10 +120,11 @@ module.exports = class WaterMelonClient extends Client {
         /** @type {typeof DB} */
         this.database = DB;
 
-        const evnts = new EventHandler(this);
-
-        this.commands = MessageCommandHandler(this);
-        this.interactions = SlashCommandHandler(this);
+        // this.commands = MessageCommandHandler(this);
+        /** @type {EventHandler} */
+        this.events =new EventHandler(this);
+        /** @type {InteractionsHandler} */
+        this.interactions = new InteractionsHandler(this);
 
         /**
          * @type {boolean}
@@ -189,11 +195,7 @@ module.exports = class WaterMelonClient extends Client {
      * @param {string} message
      * @returns {Promise<import("discord.js").Message>} */
     async sendInteractionMessage(interaction, category, message) {
-        const embed = new Embed().default(
-            "Success",
-            category,
-            message
-        );
+        const embed = new Embed().default("Success", category, message);
 
         return await this.sendInteraction(interaction, { embeds: [embed] });
     }
@@ -205,12 +207,8 @@ module.exports = class WaterMelonClient extends Client {
      * @param {string} message
      * @returns {Promise<import("discord.js").Message>} */
     async sendThemedInteractionMessage(interaction, theme, category, message) {
-        const embed = new Embed(theme).default(
-            theme,
-            category,
-            message
-        );
-        
+        const embed = new Embed(theme).default(theme, category, message);
+
         return await this.sendInteraction(interaction, { embeds: [embed] });
     }
 
@@ -246,9 +244,26 @@ module.exports = class WaterMelonClient extends Client {
         if (!embed.color) embed = emb.default("Success", ttl, desc);
     }
 
+    /**
+     * Start the login procedure for the client.
+     *
+     * @async
+     * @returns {Promise<string>} Empty string */
+    async start() {
+        this.logger.debug(
+            `Login procedure started. Loading required modules for: [${this.constructor.name}]`
+        );
 
+        await this.interactions.load();
+        await this.events.load();
 
-    start() {
         ipc.listen();
+
+        this.logger.debug(
+            `Required modules for [${this.constructor.name}] loaded! Logging in...`
+        );
+        await super.login(process.env.TOKEN);
+
+        return "";
     }
 };

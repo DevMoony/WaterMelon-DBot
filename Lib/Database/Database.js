@@ -4,6 +4,13 @@ const { QuickDB } = require("quick.db");
 const { join, resolve } = require("path");
 
 /**
+ * @typedef IAI
+ * @property {string} guildID - The ID of the guild.
+ * @property {string} userID - The ID of the user, which started the instance of this AI.
+ * @property {string} parentChannelID - The ID of the parent channel.
+ * @property {string} channelID - The ID of the channel. */
+
+/**
  * Used for the leveling interface for the Database interaction.
  * @typedef ILeveling
  * @property {string} userID - The ID of the user, this is unique so the Database can store unique objects.
@@ -23,6 +30,8 @@ const { join, resolve } = require("path");
 const filePath = resolve(join(process.cwd(), "Lib", "Database", "data.sql"));
 
 module.exports = {
+    /** @type {QuickDB<IAI>} */
+    ai: new QuickDB({ table: "ai", filePath }),
     /** @type {QuickDB<ILeveling>} */
     leveling: new QuickDB({ table: "leveling", filePath }),
     /** @type {QuickDB<IBlacklist>} */

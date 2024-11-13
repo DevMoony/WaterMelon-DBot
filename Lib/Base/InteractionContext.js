@@ -178,4 +178,43 @@ module.exports = class InteractionContext {
     get guildIcon() {
         return this.guild.iconURL({ size: 2048 });
     }
+
+    /**
+     * Send an interaction message reply.
+     *
+     * @param {string} category
+     * @param {string} message
+     * @returns {Promise<void>} */
+    sendInteractionMessage(category, message) {
+        return this.client.sendInteractionMessage(
+            this.interaction,
+            category,
+            message
+        );
+    }
+
+    /**
+     * Send an interaction reply.
+     *
+     * @param {string | import("discord.js").MessagePayload | import("discord.js").InteractionReplyOptions} options
+     * @returns {Promise<void>} */
+    sendInteraction(options) {
+        return this.client.sendInteraction(this.interaction, options);
+    }
+
+    /**
+     * Send an interaction with a custom theme.
+     *
+     * @param {import("../types.d.ts").EmbedTypes} theme
+     * @param {string} category
+     * @param {string} message
+     * @returns {Promise<void>} */
+    async sendThemedInteraction(theme, category, message) {
+        return this.client.sendThemedInteractionMessage(
+            this.interaction,
+            theme,
+            category,
+            message
+        );
+    }
 };

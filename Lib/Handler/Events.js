@@ -59,26 +59,5 @@ module.exports = class Events {
 		}).on("error", (err) => {
 			this.logger.error(err);
 		});
-
-		// return glob(`${dir}/**/*.js`).then((events) => {
-		// 	for (const eventFile of events) {
-		// 		delete require.cache[eventFile];
-
-		// 		const { name } = parse(eventFile);
-		// 		const File = require(eventFile);
-		// 		if (!isClass(File))
-		// 			throw new TypeError(
-		// 				`Event ${name} doesn't export a class.`,
-		// 			);
-
-		// 		const event = new File(this.client);
-		// 		if (!(event instanceof Event))
-		// 			throw new TypeError(
-		// 				`Event ${name} doesnt belong in Events.`,
-		// 			);
-                
-        //         this.client[event.once ? "once" : "on"](event.name, event.run.bind(event));
-		// 	}
-		// });
     }
 }

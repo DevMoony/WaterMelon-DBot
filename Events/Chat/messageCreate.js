@@ -17,7 +17,7 @@ module.exports = class MessageCreateEvent extends Event {
         if (!message.content.startsWith(message.client.prefix)) return;
         if (message.content === "") return;
 
-        if (message.client.aiEnabled) {
+        if (this.client.aiEnabled) {
             this.aiRun(message);
             return;
         }
