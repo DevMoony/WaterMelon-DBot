@@ -37,7 +37,7 @@ module.exports = class MessageCommands {
 
     /**
      * A function which loads and registers message events.
-     * @param {FinishyChanDClient} client The client instance.
+     * @param {WaterMelonClient} client The client instance.
      * @returns {void} */
     async load() {
         const dir = resolve(__dirname, "..", "..", "Commands");
