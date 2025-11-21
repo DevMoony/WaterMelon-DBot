@@ -8,9 +8,6 @@ const InteractionsHandler = require("../Handler/Interactions");
 // Resolvers for resolving certain items in a better way.
 const UserResolver = require("../Resolvers/User");
 
-// Database - used for several purposes for storing data.
-const DB = require("../Database/Database");
-
 // Utilities - used for various functions.
 const { readFromJSON } = require("../Utilities/Utilities");
 
